@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Neon Calculator</title>
+<style>
+:root{color-scheme:dark;--cyan:#37f5ff;--pink:#ff3bd4;--bg:#070914}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 15% 10%,#15234a 0,transparent 35%),radial-gradient(circle at 90% 90%,#35103d 0,transparent 35%),var(--bg);font-family:system-ui,sans-serif;color:#eefcff;padding:18px}
+.calc{width:min(100%,390px);border:1px solid #37f5ff88;border-radius:28px;padding:20px;background:#0b1020eF;box-shadow:0 0 25px #37f5ff30,inset 0 0 25px #ff3bd411}
+.brand{text-align:center;color:var(--cyan);letter-spacing:4px;font-weight:800;margin:2px 0 18px;text-shadow:0 0 12px #37f5ff}
+.display{height:112px;border:1px solid #37f5ff55;border-radius:18px;margin-bottom:18px;padding:14px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;overflow:hidden;background:#030611}
+#expr{font-size:16px;color:#92a8c8;min-height:24px;max-width:100%;overflow-wrap:anywhere}
+#out{font-size:36px;font-weight:650;color:white;text-shadow:0 0 12px #37f5ff;max-width:100%;overflow-wrap:anywhere}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+button{border:1px solid #37f5ff55;background:#111a2d;color:#eafcff;border-radius:15px;min-height:62px;font-size:21px;font-weight:600;box-shadow:inset 0 0 12px #37f5ff08;touch-action:manipulation}
+button:active{transform:scale(.96);box-shadow:0 0 16px #37f5ff66}
+.op{color:var(--cyan);border-color:#37f5ff99}.pink{color:var(--pink);border-color:#ff3bd488}.equal{background:linear-gradient(135deg,#08b9d0,#a92fc2);color:white;border:0;box-shadow:0 0 18px #37f5ff40}.zero{grid-column:span 2}
+.foot{text-align:center;color:#5e739b;font-size:11px;margin-top:15px;letter-spacing:2px}
+</style>
+</head>
+<body>
+<main class="calc">
+<div class="brand">NEON CALCULATOR</div>
+<div class="display"><div id="expr"></div><div id="out">0</div></div>
+<div class="keys">
+<button class="pink" data-action="clear">AC</button><button class="pink" data-action="delete">DEL</button><button class="op" data-value="%">%</button><button class="op" data-value="/">÷</button>
+<button data-value="7">7</button><button data-value="8">8</button><button data-value="9">9</button><button class="op" data-value="*">×</button>
+<button data-value="4">4</button><button data-value="5">5</button><button data-value="6">6</button><button class="op" data-value="-">−</button>
+<button data-value="1">1</button><button data-value="2">2</button><button data-value="3">3</button><button class="op" data-value="+">+</button>
+<button class="zero" data-value="0">0</button><button data-value=".">.</button><button class="equal" data-action="equals">=</button>
+</div>
+<div class="foot">GLOW IN EVERY CALCULATION</div>
+</main>
+<script>
+const out=document.getElementById('out'), expr=document.getElementById('expr');let s='';
+function render(){expr.textContent=s.replaceAll('*','×').replaceAll('/','÷');out.textContent=s||'0'}
+function calc(){if(!s)return;try{if(!/^[0-9+*/%.()\- ]+$/.test(s))throw 0;let v=Function('"use strict";return ('+s+')')();if(!Number.isFinite(v))throw 0;s=String(Number(v.toPrecision(12)));expr.textContent='RESULT';out.textContent=s}catch(e){out.textContent='Error';s=''}}
+document.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.action,v=b.dataset.value;if(a==='clear'){s='';render()}else if(a==='delete'){s=s.slice(0,-1);render()}else if(a==='equals'){calc()}else{s+=v;render()}}));
+document.addEventListener('keydown',e=>{if(/[0-9.+\-*/%()]/.test(e.key)&&e.key.length===1){s+=e.key;render()}else if(e.key==='Backspace'){s=s.slice(0,-1);render()}else if(e.key==='Enter'){calc()}else if(e.key==='Escape'){s='';render()}});
+</script>
+</body>
+</html>
